@@ -1,0 +1,1 @@
+Build a tiny browser game in one HTML file: Snake, arrow keys / WASD, score, speed up as you eat, game over screen with restart, bright neon style.
