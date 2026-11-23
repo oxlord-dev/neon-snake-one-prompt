@@ -12,7 +12,7 @@
 // The placeholder POST.json shipped here names status/PLACEHOLDER on
 // purpose: this program refuses it until the real X post URL is filled
 // in after the video is posted.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -43,8 +43,12 @@ if (!ok) {
 let outDir = "/output";
 try {
   mkdirSync(outDir, { recursive: true });
-  // Prove /output is actually writable before committing to it.
-  writeFileSync(join(outDir, ".write-test"), "");
+  // Prove /output is actually writable before committing to it, without
+  // leaving any stray file behind: a leftover ".write-test" broke the
+  // round-1 run_completes check (".write-test" is not a valid output path).
+  const probe = join(outDir, ".write-test");
+  writeFileSync(probe, "");
+  rmSync(probe);
 } catch {
   outDir = join(repoRoot, "output");
   mkdirSync(outDir, { recursive: true });
